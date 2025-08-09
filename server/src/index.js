@@ -1,13 +1,4 @@
-if (process.env.NODE_ENV !== 'production') {
-    try {
-      // Use dynamic import to avoid ESM static resolution issues
-      const dotenv = await import('dotenv');
-      dotenv.config();
-      console.log('✅ Local environment variables loaded from .env');
-    } catch (err) {
-      console.warn('⚠️ dotenv not found locally. Skipping .env loading.');
-    }
-  }
+import dotenv from "dotenv"
 
 import connectDB from "./db/db.js";
 import {app} from './app.js'

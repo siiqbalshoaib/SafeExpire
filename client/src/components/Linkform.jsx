@@ -15,7 +15,7 @@ const Linkform = () => {
   const [result, setResult] = useState(null);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`http://localhost:5173/view/${result.link}`);
+    navigator.clipboard.writeText(`http://www.safeexpire.com/view/${result.link}`);
     alert("Copied to clipboard!");
   };
 
@@ -54,7 +54,7 @@ const Linkform = () => {
 
         // ✅ FIXED: Endpoint should be generateLinkFile for file
         const res = await axios.post(
-          "http://localhost:8000/api/v1/link/generateLinkText",
+          "https://safeexpire.onrender.com/api/v1/link/generateLinkText",
           formData,
           {
             headers: {
@@ -71,7 +71,7 @@ const Linkform = () => {
         }
 
         const res = await axios.post(
-          "http://localhost:8000/api/v1/link/generateLinkText",
+          "https://safeexpire.onrender.com/api/v1/link/generateLinkText",
           {
             text,
             ...payload,
@@ -238,12 +238,12 @@ const Linkform = () => {
             <p className="mb-4 text-sm sm:text-base break-words">
               ✅ Link Created:{" "}
               <a
-                href={`http://localhost:5173/view/${result.link}`}
+                href={`http://www.safeexpire.com/view/${result.link}`}
                 className="text-blue-700 underline break-all"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {`http://localhost:5173/view/${result.link}`}
+                {`http://www.safeexpire.com/view/${result.link}`}
               </a>
             </p>
             <button

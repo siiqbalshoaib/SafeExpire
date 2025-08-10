@@ -13,7 +13,7 @@ const ViewContent = () => {
     try {
       const query = passwordInput ? `?password=${encodeURIComponent(passwordInput)}` : "";
 
-      const response = await fetch(`http://localhost:8000/api/v1/link/viewLink/${id}${query}`);
+      const response = await fetch(`https://safeexpire.onrender.com/api/v1/link/viewLink/${id}${query}`);
       const result = await response.json();
 
       if (result.success) {

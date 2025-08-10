@@ -15,7 +15,7 @@ const Linkform = () => {
   const [result, setResult] = useState(null);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`http://www.safeexpire.com/view/${result.link}`);
+    navigator.clipboard.writeText(`https://www.safeexpire.com/view/${result.link}`);
     alert("Copied to clipboard!");
   };
 
@@ -238,12 +238,12 @@ const Linkform = () => {
             <p className="mb-4 text-sm sm:text-base break-words">
               ✅ Link Created:{" "}
               <a
-                href={`http://www.safeexpire.com/view/${result.link}`}
+                href={`https://www.safeexpire.com/view/${result.link}`}
                 className="text-blue-700 underline break-all"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {`http://www.safeexpire.com/view/${result.link}`}
+                {`https://www.safeexpire.com/view/${result.link}`}
               </a>
             </p>
             <button

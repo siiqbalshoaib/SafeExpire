@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 import Navbar from '../components/NavBar'
 import Footer from '../components/Footer'
+import { Helmet } from "react-helmet-async";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -52,6 +53,12 @@ const Contact = () => {
      
   return (
     <>
+     <Helmet>
+        <title>Contact Us</title>
+        <meta name="title" content="Contact Us" />
+        <meta name="description" content="Have questions, suggestions, or feedback? We’d love to hear from you. Just fill out the form below." />
+        <meta name="robots" content="index, follow" />
+      </Helmet>
     <Navbar/>
     <section className="bg-[#EFE4D2] py-16 px-4" id="contact">
       <div className="max-w-3xl   mx-auto text-center mb-10">

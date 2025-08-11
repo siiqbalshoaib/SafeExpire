@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
+const VITE_HOST = import.meta.env.VITE_HOST;
 
 const Linkform = () => {
   const [activeTab, setActiveTab] = useState("text");
@@ -17,7 +18,7 @@ const Linkform = () => {
  
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`https://www.safeexpire.com/view/${result.link}`);
+    navigator.clipboard.writeText(`${VITE_HOST}/view/${result.link}`);
     alert("Copied to clipboard!");
   };
 
@@ -73,7 +74,7 @@ const Linkform = () => {
         }
 
         const res = await axios.post(
-          "https://safeexpire.onrender.com/api/v1/link/generateLinkText",
+          `${VITE_API_URL}/api/v1/link/generateLinkText`,
           {
             text,
             ...payload,
@@ -240,12 +241,12 @@ const Linkform = () => {
             <p className="mb-4 text-sm sm:text-base break-words">
               ✅ Link Created:{" "}
               <a
-                href={`https://www.safeexpire.com/view/${result.link}`}
+                href={`${VITE_HOST}/view/${result.link}`}
                 className="text-blue-700 underline break-all"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {`https://www.safeexpire.com/view/${result.link}`}
+                {`${VITE_HOST}/view/${result.link}`}
               </a>
             </p>
             <button

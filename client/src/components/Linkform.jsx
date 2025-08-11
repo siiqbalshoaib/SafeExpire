@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Linkform = () => {
   const [activeTab, setActiveTab] = useState("text");
@@ -13,6 +14,7 @@ const Linkform = () => {
   const [restrictedIp, setRestrictedIp] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+ 
 
   const handleCopy = () => {
     navigator.clipboard.writeText(`https://www.safeexpire.com/view/${result.link}`);
@@ -51,10 +53,10 @@ const Linkform = () => {
         formData.append("expiresAt", expiresAt);
         formData.append("password", password);
         formData.append("restrictedIp", restrictedIp);
-
+        //${API_BASE_URL}/api/${API_VERSION}
         // ✅ FIXED: Endpoint should be generateLinkFile for file
         const res = await axios.post(
-          "https://safeexpire.onrender.com/api/v1/link/generateLinkText",
+          `${VITE_API_URL}/api/v1/link/generateLinkText`,
           formData,
           {
             headers: {

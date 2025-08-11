@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const ViewContent = () => {
   const { id } = useParams();
@@ -13,7 +14,7 @@ const ViewContent = () => {
     try {
       const query = passwordInput ? `?password=${encodeURIComponent(passwordInput)}` : "";
 
-      const response = await fetch(`https://safeexpire.onrender.com/api/v1/link/viewLink/${id}${query}`);
+      const response = await fetch(`${VITE_API_URL}/api/v1/link/viewLink/${id}${query}`);
       const result = await response.json();
 
       if (result.success) {

@@ -92,6 +92,7 @@ const Linkform = () => {
       // ✅ Show success message
 
       console.log("Link created successfully:", response);
+      alert("Link Created Successfully!")
       setResult(response.data);
     } catch (error) {
       console.error("Error submitting form:", error);

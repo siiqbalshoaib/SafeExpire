@@ -92,11 +92,14 @@ const Linkform = () => {
       // ✅ Show success message
 
       console.log("Link created successfully:", response);
+      if(response.success){
       alert("Link Created Successfully!")
+    }
       setResult(response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
       setResult({ success: false, message: "Server error. Try again later." });
+      alert("Error creating link. Please try again later.");
     }
 
     setLoading(false);

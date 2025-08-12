@@ -174,7 +174,7 @@ const Linkform = () => {
                 value={maxClicks}
                 onChange={(e) => setMaxClicks(e.target.value)}
               >
-               
+                {/* <option>Unlimited</option> */}
                 <option>1</option>
                 <option>5</option>
                 <option>10</option>
@@ -189,7 +189,7 @@ const Linkform = () => {
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
               >
-               
+                {/* <option>Never</option> */}
                 <option>5 Minutes</option>
                 <option>10 Minutes</option>
                 <option>30 Minutes</option>

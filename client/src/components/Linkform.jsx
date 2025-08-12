@@ -9,8 +9,8 @@ const Linkform = () => {
   // from state
   const [text, setText] = useState("");
   const [file, setFile] = useState(null);
-  const [maxClicks, setMaxClicks] = useState("Unlimited");
-  const [expiresAt, setExpiresAt] = useState("Never");
+  const [maxClicks, setMaxClicks] = useState("1");
+  const [expiresAt, setExpiresAt] = useState("5 Minutes");
   const [password, setPassword] = useState("");
   const [restrictedIp, setRestrictedIp] = useState("");
   const [loading, setLoading] = useState(false);

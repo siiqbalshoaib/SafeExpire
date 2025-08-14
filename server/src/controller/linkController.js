@@ -101,7 +101,7 @@ const generateLinkText = asyncHandler(async (req, res) => {
   }
 
   // Fetch link securely
-  const link = await Link.findOne(createdUrl).lean();
+  const link = await Link.findOne({createdUrl}).lean();
   if (!link) {
     throw new ApiError(404, "Link not found");
   }

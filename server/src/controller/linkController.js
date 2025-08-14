@@ -96,21 +96,20 @@ const viewLink = asyncHandler(async (req, res) => {
 
 
 if (!link) {
-  // Determine reason
-  const original = await Link.findOne({ createdUrl });
-  if (!original) throw new ApiError(404, "Link Not Found");
+  
+  throw new ApiError(404, "Link Not Found");
 }
 
-  if (original.expiresAt && new Date() > original.expiresAt) {
+  if (link.expiresAt && new Date() > original.expiresAt) {
     throw new ApiError(410, "Link Expired");
   }
-  if (original.maxClicks > 0 && original.clicks >= original.maxClicks) {
+  if (link.maxClicks > 0 && link.clicks >= link.maxClicks) {
     return res.status(429).json({
       success: false,
       message: "Maximum click limit reached",
     });
   }
-  if (original.restrictedIp && original.restrictedIp !== clientIp) {
+  if (link.restrictedIp && link.restrictedIp !== clientIp) {
     return res.status(403).json({
       success: false,
       message: "Access denied for this IP",

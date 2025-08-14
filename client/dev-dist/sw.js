@@ -91,7 +91,7 @@ define(['./workbox-985f11f4'], (function (workbox) { 'use strict';
 
   /// this code
   workbox.registerRoute(
-    ({ url }) => url.pathname.startsWith('/api/viewLink'),
+    ({ url }) => url.pathname.startsWith('/api/v1/link/viewLink'),
     new workbox.NetworkFirst({ cacheName: "no-cache-sensitive" }),
     'GET'
   );

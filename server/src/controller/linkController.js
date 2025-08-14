@@ -92,24 +92,7 @@ const viewLink = asyncHandler(async (req, res) => {
 
   const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-  const link = await Link.findOneAndUpdate(
-    {
-      createdUrl,
-      // Expiry check in query
-      $or: [
-        { expiresAt: null },
-        { expiresAt: { $gt: new Date() } }
-      ],
-      // Max clicks check
-      $or: [
-        { maxClicks: 0 }, // unlimited
-        { $expr: { $lt: ["$clicks", "$maxClicks"] } }
-      ],
-     
-    },
-    { $inc: { clicks: 1 } },
-    { new: true }
-  );
+  const link = await Link.findOne({createdUrl});
 
 
 if (!link) {

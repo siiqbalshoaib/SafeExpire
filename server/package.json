@@ -28,7 +28,8 @@
     "nanoid": "^5.1.5",
     "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
-    "streamifier": "^0.1.1"
+    "streamifier": "^0.1.1",
+    "validator": "^13.15.15"
   },
   "keywords": []
 }

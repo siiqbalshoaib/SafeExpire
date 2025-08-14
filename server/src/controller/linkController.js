@@ -87,7 +87,7 @@ const generateLinkText = asyncHandler(async (req, res) => {
 
 
  const viewLink = asyncHandler(async (req, res) => {
-  const linkId = req.params.id;
+  const {createdUrl} = req.params.id;
 
   // Client IP extraction (supporting proxies)
   const clientIp =
@@ -96,12 +96,12 @@ const generateLinkText = asyncHandler(async (req, res) => {
     req.ip;
 
   // Validate linkId format
-  if (!validator.isAlphanumeric(linkId)) {
+  if (!validator.isAlphanumeric(createdUrl)) {
     throw new ApiError(400, "Invalid link identifier");
   }
 
   // Fetch link securely
-  const link = await Link.findById(linkId).lean();
+  const link = await Link.findById(createdUrl).lean();
   if (!link) {
     throw new ApiError(404, "Link not found");
   }
@@ -142,7 +142,7 @@ const generateLinkText = asyncHandler(async (req, res) => {
   }
 
   // Increment click count securely
-  await Link.updateOne({ _id: linkId }, { $inc: { clicks: 1 } });
+  await Link.updateOne({ _id: createdUrl }, { $inc: { clicks: 1 } });
 
   // Hide sensitive fields before sending response
   const safeLink = {

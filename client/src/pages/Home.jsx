@@ -4,7 +4,7 @@ import Linkform from "../components/Linkform";
 import Cards from "../components/Cards";
 import Navbar from "../components/NavBar";
 import Footer from "../components/Footer";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
   return (

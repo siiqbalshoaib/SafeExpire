@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../components/NavBar.jsx";
 import Footer from "../components/Footer.jsx";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 
 const About = () => {
   return (

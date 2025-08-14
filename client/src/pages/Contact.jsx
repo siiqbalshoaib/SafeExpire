@@ -1,7 +1,7 @@
 import React,{useState} from 'react'
 import Navbar from '../components/NavBar'
 import Footer from '../components/Footer'
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 
 const Contact = () => {
   const [formData, setFormData] = useState({

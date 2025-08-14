@@ -24,13 +24,26 @@ registerRoute(
 
 // ✅ 2. Network only for SafeExpire protected content
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/view/'), // Adjust to your protected route pattern
+  ({ url }) => url.pathname.startsWith("https://safeexpire.onrender.com/api/v1/link/viewLink"), // Adjust to your protected route pattern
+  new NetworkOnly()
+);
+registerRoute(
+  ({ url }) => url.pathname.startsWith("https://www.safeexpire.com/view"), // Adjust to your protected route pattern
   new NetworkOnly()
 );
 
 // ✅ 3. API calls (cache optional)
 registerRoute(
-  ({ url }) => url.pathname.startsWith('/api/'),
+  ({ url }) => url.pathname.startsWith('https://safeexpire.onrender.com/api/v1/link/viewLink'),
+  new NetworkFirst({
+    cacheName: 'api-cache',
+    plugins: [
+      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
+    ],
+  })
+);
+registerRoute(
+  ({ url }) => url.pathname.startsWith('https://www.safeexpire.com/view'),
   new NetworkFirst({
     cacheName: 'api-cache',
     plugins: [

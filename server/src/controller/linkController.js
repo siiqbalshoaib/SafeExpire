@@ -94,7 +94,7 @@ const viewLink = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Link Not Found");
   }
 
-  if (link.expiresAt && new Date() > original.expiresAt) {
+  if (link.expiresAt && new Date() > link.expiresAt) {
     throw new ApiError(410, "Link Expired");
   }
   if (link.maxClicks > 0 && link.clicks >= link.maxClicks) {

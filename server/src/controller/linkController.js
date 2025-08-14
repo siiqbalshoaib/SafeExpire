@@ -4,8 +4,8 @@ import { Link } from "../models/linkModel.js";
 //import { ApiResponse } from "../utils/ApiResponse.js";
 
 import validator from "validator"; // For extra validation
-import mime from "mime-types";
-import axios from 'axios';
+// import mime from "mime-types";
+// import axios from 'axios';
 
 import { nanoid } from "nanoid";
 //import { promisify } from "util";

@@ -101,6 +101,12 @@ const viewLink = asyncHandler(async (req, res) => {
   const link = await Link.findOne({ createdUrl });
   if (!link) throw new ApiError(404, "Link Not Found");
 
+
+  // maxxclicks
+  if (link.maxClicks && link.clicks >= link.maxClicks) {
+    return res.status(403).json({ error: "Maxximum views reached" });
+}
+
   // 2) Expiry check
   if (link.expiresAt && Date.now() > new Date(link.expiresAt).getTime()) {
     throw new ApiError(410, "Link Expired");

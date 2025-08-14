@@ -88,13 +88,12 @@ define(['./workbox-985f11f4'], (function (workbox) { 'use strict';
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
     allowlist: [/^\/$/]
   }));
-  workbox.registerRoute(({
-    url
-  }) => url.pathname.startsWith("/api"), new workbox.CacheFirst({
-    "cacheName": "api-cache",
-    plugins: [new workbox.CacheableResponsePlugin({
-      statuses: [0, 200]
-    })]
-  }), 'GET');
+
+  /// this code
+  workbox.registerRoute(
+    ({ url }) => url.pathname.startsWith('/api/viewLink'),
+    new workbox.NetworkFirst({ cacheName: "no-cache-sensitive" }),
+    'GET'
+  );
 
 }));

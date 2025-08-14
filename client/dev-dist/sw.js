@@ -1,28 +1,59 @@
-import { clientsClaim } from 'workbox-core';
-import { precacheAndRoute } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
-import { NetworkOnly } from 'workbox-strategies';
+// service-worker.js
 
-self.skipWaiting();
-clientsClaim();
+self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Activate immediately
+});
 
-// 🧹 Clear all old caches on activate
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(key => caches.delete(key)))
-    )
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // Clone the request and append a cache-busting param
+  const noCacheRequest = new Request(url.toString() + '?_t=' + Date.now(), {
+    method: event.request.method,
+    headers: event.request.headers,
+    body: event.request.body,
+    mode: 'cors',
+    credentials: event.request.credentials,
+    redirect: 'follow',
+    cache: 'no-store' // Ensures browser does not cache
+  });
+
+  event.respondWith(
+    (async () => {
+      try {
+        const response = await fetch(noCacheRequest);
+        // Force no-store headers in the response
+        const modifiedResponse = new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: {
+            ...Object.fromEntries(response.headers.entries()),
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0',
+          },
+        });
+        return modifiedResponse;
+      } catch (err) {
+        return new Response('You are offline. Please check your internet connection.', {
+          status: 503,
+          statusText: 'Service Unavailable',
+          headers: { 'Content-Type': 'text/plain' },
+        });
+      }
+    })()
   );
 });
 
-// 📦 Precache only minimal files for PWA installability
-precacheAndRoute([
-  { url: 'index.html', revision: '1' },
-  { url: 'registerSW.js', revision: '1' }
-]);
-
-// 🌐 Force all other requests to go to network (no cache)
-registerRoute(
-  ({ url }) => !url.pathname.endsWith('index.html') && !url.pathname.endsWith('registerSW.js'),
-  new NetworkOnly()
-);
+// Optional: Clear all caches when message received
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'CLEAR_CACHE') {
+    caches.keys().then((names) => {
+      names.forEach((name) => caches.delete(name));
+    });
+  }
+});

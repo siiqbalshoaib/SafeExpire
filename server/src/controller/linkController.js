@@ -5,7 +5,7 @@ import { Link } from "../models/linkModel.js";
 
 // import validator from "validator"; // For extra validation
 import mime from "mime-types";
-import axios from 'axios';
+import axios from "axios";
 
 import { nanoid } from "nanoid";
 //import { promisify } from "util";
@@ -16,9 +16,7 @@ const generateLinkText = asyncHandler(async (req, res) => {
   const { text, maxClicks, expiresAt, password, restrictedIp } = req.body;
 
   if (
-    [text, maxClicks, expiresAt].some(
-      (field) => String(field).trim() === ""
-    )
+    [text, maxClicks, expiresAt].some((field) => String(field).trim() === "")
   ) {
     throw new ApiError(400, "All fields are required");
   }
@@ -36,14 +34,15 @@ const generateLinkText = asyncHandler(async (req, res) => {
       "1 Hour": 60 * 60 * 1000,
       "1 Day": 24 * 60 * 60 * 1000,
     };
-    return durations[duration] ? new Date(now.getTime() + durations[duration]) : null;
+    return durations[duration]
+      ? new Date(now.getTime() + durations[duration])
+      : null;
   };
 
   let originalText;
   console.log("Received file:", req.file);
   if (req.file) {
     const documentLocalFilePath = req.file.path;
-   
 
     const uploadedFile = await uploadOnCloudinary(documentLocalFilePath);
     console.log("Uploaded file:", uploadedFile);
@@ -52,9 +51,9 @@ const generateLinkText = asyncHandler(async (req, res) => {
     }
 
     originalText = uploadedFile.url;
-  } else if (text){
+  } else if (text) {
     originalText = text;
-  }else{
+  } else {
     throw new ApiError(400, "Text or file is required");
   }
 
@@ -83,22 +82,17 @@ const generateLinkText = asyncHandler(async (req, res) => {
   });
 });
 
-
-
-
 const viewLink = asyncHandler(async (req, res) => {
   const { createdUrl } = req.params;
   const password = req.body?.password || null;
 
-  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-  const link = await Link.findOne({createdUrl});
+  const link = await Link.findOne({ createdUrl });
 
-
-if (!link) {
-  
-  throw new ApiError(404, "Link Not Found");
-}
+  if (!link) {
+    throw new ApiError(404, "Link Not Found");
+  }
 
   if (link.expiresAt && new Date() > original.expiresAt) {
     throw new ApiError(410, "Link Expired");
@@ -116,12 +110,13 @@ if (!link) {
     });
   }
 
-   
   if (link.password && link.password !== password) {
     return res.json({ success: true, data: "password_required" });
   } else {
     if (link.password && password && link.password !== password) {
-      return res.status(401).json({ success: false, message: "Incorrect password" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Incorrect password" });
     }
   }
 
@@ -131,14 +126,15 @@ if (!link) {
 
   const cloudinaryUrl = link.originalText;
 
-  
   if (link.isFile) {
     // Stream Cloudinary file through backend
     const cloudinaryUrl = link.originalText;
     const fileName = cloudinaryUrl.split("/").pop().split("?")[0];
     const fileType = mime.lookup(fileName) || "application/octet-stream";
 
-    const fileResponse = await axios.get(cloudinaryUrl, { responseType: "stream" });
+    const fileResponse = await axios.get(cloudinaryUrl, {
+      responseType: "stream",
+    });
 
     res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
     res.setHeader("Content-Type", fileType);
@@ -152,11 +148,6 @@ if (!link) {
       data: link.originalText,
     });
   }
-  
 });
 
-
-
-export {
-    generateLinkText,
-    viewLink}
+export { generateLinkText, viewLink };

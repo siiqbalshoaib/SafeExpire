@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',     // ensures users get updates promptly
+      registerType: 'autoUpdate',  // ensures users get updates promptly
+      injectRegister: 'auto',
       devOptions: {
         enabled: true,                // great for local testing on HTTP
       },

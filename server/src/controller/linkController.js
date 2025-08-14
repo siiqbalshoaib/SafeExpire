@@ -105,8 +105,7 @@ const viewLink = asyncHandler(async (req, res) => {
         { maxClicks: 0 }, // unlimited
         { $expr: { $lt: ["$clicks", "$maxClicks"] } }
       ],
-      // IP restriction check
-      ...(restrictedIp ? { restrictedIp: clientIp } : {})
+     
     },
     { $inc: { clicks: 1 } },
     { new: true }

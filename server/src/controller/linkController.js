@@ -3,9 +3,9 @@ import { ApiError } from "../utils/ApiError.js";
 import { Link } from "../models/linkModel.js";
 //import { ApiResponse } from "../utils/ApiResponse.js";
 
-import validator from "validator"; // For extra validation
-// import mime from "mime-types";
-// import axios from 'axios';
+// import validator from "validator"; // For extra validation
+import mime from "mime-types";
+import axios from 'axios';
 
 import { nanoid } from "nanoid";
 //import { promisify } from "util";
@@ -88,99 +88,90 @@ const generateLinkText = asyncHandler(async (req, res) => {
 
 const viewLink = asyncHandler(async (req, res) => {
   const { createdUrl } = req.params;
-  const password = req.body?.password ?? null;
+  const password = req.body?.password || null;
 
-  // Robust client IP (works with proxies/CDNs)
-  const fwd = req.headers["x-forwarded-for"];
-  const clientIp =
-    (typeof fwd === "string" ? fwd.split(",")[0].trim() : null) ||
-    req.socket?.remoteAddress ||
-    req.ip;
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-  // 1) Find link (no increments yet)
-  const link = await Link.findOne({ createdUrl });
-  if (!link) throw new ApiError(404, "Link Not Found");
-
-
-  // maxxclicks
-  if (link.maxClicks && link.clicks >= link.maxClicks) {
-    return res.status(403).json({ error: "Maxximum views reached" });
-}
-
-  // 2) Expiry check
-  if (link.expiresAt && Date.now() > new Date(link.expiresAt).getTime()) {
-    throw new ApiError(410, "Link Expired");
-  }
-
-  // 3) IP restriction check (don’t waste clicks on blocked IPs)
-  if (link.restrictedIp && link.restrictedIp !== clientIp) {
-    return res.status(403).json({
-      success: false,
-      message: "Access denied for this IP",
-    });
-  }
-
-  // 4) Password check BEFORE increment
-  if (link.password) {
-    if (!password) {
-      return res.status(200).json({ success: true, data: "password_required" });
-    }
-    if (link.password !== password) {
-      return res.status(401).json({ success: false, message: "Incorrect password" });
-    }
-  }
-
-  // 5) Atomic click increment with maxClicks guard (prevents race conditions)
-  const updatedLink = await Link.findOneAndUpdate(
+  const link = await Link.findOneAndUpdate(
     {
-      _id: link._id,
+      createdUrl,
+      // Expiry check in query
+      $or: [
+        { expiresAt: null },
+        { expiresAt: { $gt: new Date() } }
+      ],
+      // Max clicks check
       $or: [
         { maxClicks: 0 }, // unlimited
-        { $expr: { $lt: ["$clicks", "$maxClicks"] } }, // still under limit
+        { $expr: { $lt: ["$clicks", "$maxClicks"] } }
       ],
+      // IP restriction check
+      ...(restrictedIp ? { restrictedIp: clientIp } : {})
     },
     { $inc: { clicks: 1 } },
     { new: true }
   );
 
-  if (!updatedLink) {
+
+if (!link) {
+  // Determine reason
+  const original = await Link.findOne({ createdUrl });
+  if (!original) throw new ApiError(404, "Link Not Found");
+
+  if (original.expiresAt && new Date() > original.expiresAt) {
+    throw new ApiError(410, "Link Expired");
+  }
+  if (original.maxClicks > 0 && original.clicks >= original.maxClicks) {
     return res.status(429).json({
       success: false,
       message: "Maximum click limit reached",
     });
   }
+  if (original.restrictedIp && original.restrictedIp !== clientIp) {
+    return res.status(403).json({
+      success: false,
+      message: "Access denied for this IP",
+    });
+  }
+}
+   
+  if (link.password && link.password !== password) {
+    return res.json({ success: true, data: "password_required" });
+  } else {
+    if (link.password && password && link.password !== password) {
+      return res.status(401).json({ success: false, message: "Incorrect password" });
+    }
+  }
 
-  // 6) Serve content
-  if (updatedLink.isFile) {
-    // Stream file via backend (keeps URL out of frontend code paths)
-    const cloudinaryUrl = updatedLink.originalText;
-    const fileName = (() => {
-      try {
-        return cloudinaryUrl.split("/").pop().split("?")[0];
-      } catch {
-        return "file";
-      }
-    })();
+  // Increment click count
+  link.clicks += 1;
+  await link.save();
+
+  const cloudinaryUrl = link.originalText;
+
+  
+  if (link.isFile) {
+    // Stream Cloudinary file through backend
+    const cloudinaryUrl = link.originalText;
+    const fileName = cloudinaryUrl.split("/").pop().split("?")[0];
     const fileType = mime.lookup(fileName) || "application/octet-stream";
 
-    try {
-      const fileResponse = await axios.get(cloudinaryUrl, { responseType: "stream" });
-      res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
-      res.setHeader("Content-Type", fileType);
-      return fileResponse.data.pipe(res);
-    } catch (e) {
-      throw new ApiError(502, "Failed to fetch file");
-    }
+    const fileResponse = await axios.get(cloudinaryUrl, { responseType: "stream" });
+
+    res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+    res.setHeader("Content-Type", fileType);
+
+    return fileResponse.data.pipe(res);
   } else {
-    // Plain text
+    // Return plain text
     return res.status(200).json({
       success: true,
       message: "Text fetched successfully",
-      data: updatedLink.originalText,
+      data: link.originalText,
     });
   }
+  
 });
-
 
 
 

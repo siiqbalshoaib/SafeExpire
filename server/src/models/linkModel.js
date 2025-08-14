@@ -22,7 +22,7 @@ const linkSchema = new Schema(
     },
     maxClicks: {
       type: Number,
-      default: 1, // 0 = unlimited clicks
+      default: 0, // 0 = unlimited clicks
     },
     clicks: {
       type: Number,

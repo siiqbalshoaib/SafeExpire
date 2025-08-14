@@ -99,6 +99,7 @@ if (!link) {
   // Determine reason
   const original = await Link.findOne({ createdUrl });
   if (!original) throw new ApiError(404, "Link Not Found");
+}
 
   if (original.expiresAt && new Date() > original.expiresAt) {
     throw new ApiError(410, "Link Expired");
@@ -115,7 +116,7 @@ if (!link) {
       message: "Access denied for this IP",
     });
   }
-}
+
    
   if (link.password && link.password !== password) {
     return res.json({ success: true, data: "password_required" });

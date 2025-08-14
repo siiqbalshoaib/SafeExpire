@@ -90,28 +90,48 @@ const viewLink = asyncHandler(async (req, res) => {
 
   const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-  const link = await Link.findOne({ createdUrl });
-  if (!link) {
-    throw new ApiError(404, "Link Not Found");
-  }
+  const link = await Link.findOneAndUpdate(
+    {
+      createdUrl,
+      // Expiry check in query
+      $or: [
+        { expiresAt: null },
+        { expiresAt: { $gt: new Date() } }
+      ],
+      // Max clicks check
+      $or: [
+        { maxClicks: 0 }, // unlimited
+        { $expr: { $lt: ["$clicks", "$maxClicks"] } }
+      ],
+      // IP restriction check
+      ...(restrictedIp ? { restrictedIp: clientIp } : {})
+    },
+    { $inc: { clicks: 1 } },
+    { new: true }
+  );
 
-  if (link.expiresAt && new Date() > link.expiresAt) {
+
+if (!link) {
+  // Determine reason
+  const original = await Link.findOne({ createdUrl });
+  if (!original) throw new ApiError(404, "Link Not Found");
+
+  if (original.expiresAt && new Date() > original.expiresAt) {
     throw new ApiError(410, "Link Expired");
   }
-
-  if (link.maxClicks > 0 && link.clicks >= link.maxClicks) {
+  if (original.maxClicks > 0 && original.clicks >= original.maxClicks) {
     return res.status(429).json({
       success: false,
       message: "Maximum click limit reached",
     });
   }
-
-  if (link.restrictedIp && link.restrictedIp !== clientIp) {
+  if (original.restrictedIp && original.restrictedIp !== clientIp) {
     return res.status(403).json({
       success: false,
       message: "Access denied for this IP",
     });
   }
+}
    
   if (link.password && link.password !== password) {
     return res.json({ success: true, data: "password_required" });

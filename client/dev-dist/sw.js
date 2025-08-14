@@ -12,31 +12,29 @@
  */
 
 // If the loader is already loaded, just stop.
+
+
+
+
 if (!self.define) {
   let registry = {};
-
-  // Used for `eval` and `importScripts` where we can't get script URL by other means.
-  // In both cases, it's safe to use a global var because those functions are synchronous.
   let nextDefineUri;
 
   const singleRequire = (uri, parentUri) => {
     uri = new URL(uri + ".js", parentUri).href;
     return registry[uri] || (
-      
-        new Promise(resolve => {
-          if ("document" in self) {
-            const script = document.createElement("script");
-            script.src = uri;
-            script.onload = resolve;
-            document.head.appendChild(script);
-          } else {
-            nextDefineUri = uri;
-            importScripts(uri);
-            resolve();
-          }
-        })
-      
-      .then(() => {
+      new Promise(resolve => {
+        if ("document" in self) {
+          const script = document.createElement("script");
+          script.src = uri;
+          script.onload = resolve;
+          document.head.appendChild(script);
+        } else {
+          nextDefineUri = uri;
+          importScripts(uri);
+          resolve();
+        }
+      }).then(() => {
         let promise = registry[uri];
         if (!promise) {
           throw new Error(`Module ${uri} didn’t register its module`);
@@ -48,17 +46,10 @@ if (!self.define) {
 
   self.define = (depsNames, factory) => {
     const uri = nextDefineUri || ("document" in self ? document.currentScript.src : "") || location.href;
-    if (registry[uri]) {
-      // Module is already loading or loaded.
-      return;
-    }
+    if (registry[uri]) return;
     let exports = {};
     const require = depUri => singleRequire(depUri, uri);
-    const specialDeps = {
-      module: { uri },
-      exports,
-      require
-    };
+    const specialDeps = { module: { uri }, exports, require };
     registry[uri] = Promise.all(depsNames.map(
       depName => specialDeps[depName] || require(depName)
     )).then(deps => {
@@ -67,32 +58,31 @@ if (!self.define) {
     });
   };
 }
+
 define(['./workbox-985f11f4'], (function (workbox) { 'use strict';
 
   self.skipWaiting();
   workbox.clientsClaim();
 
-  /**
-   * The precacheAndRoute() method efficiently caches and responds to
-   * requests for URLs in the manifest.
-   * See https://goo.gl/S9QRab
-   */
-  workbox.precacheAndRoute([{
-    "url": "registerSW.js",
-    "revision": "3ca0b8505b4bec776b69afdba2768812"
-  }, {
-    "url": "index.html",
-    "revision": "0.b7vqbfloaro"
-  }], {});
-  workbox.cleanupOutdatedCaches();
-  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
-    allowlist: [/^\/$/]
-  }));
+  // Precache static assets
+  workbox.precacheAndRoute([
+    { "url": "registerSW.js", "revision": "3ca0b8505b4bec776b69afdba2768812" },
+    { "url": "index.html", "revision": "0.b7vqbfloaro" }
+  ], {});
 
-  /// this code
+  workbox.cleanupOutdatedCaches();
+
   workbox.registerRoute(
-    ({ url }) => url.pathname.startsWith('https://safeexpire.onrender.com/api/v1/link/viewLink'),
-    new workbox.NetworkFirst({ cacheName: "no-cache-sensitive" }),
+    new workbox.NavigationRoute(
+      workbox.createHandlerBoundToURL("index.html"),
+      { allowlist: [/^\/$/] }
+    )
+  );
+
+  // 🚫 Never cache sensitive API requests — always go to network
+  workbox.registerRoute(
+    ({ url }) => url.pathname.startsWith('https://safeexpire.onrender.com/api/v1/link/viewLink') || url.pathname.startsWith('/api/'),
+    new workbox.NetworkOnly({ cacheName: "no-cache-sensitive" }),
     'GET'
   );
 

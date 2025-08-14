@@ -142,7 +142,11 @@ const viewLink = asyncHandler(async (req, res) => {
     return fileResponse.data.pipe(res);
   } else {
     // Return plain text
-    return res.status(200).json({
+    return res
+    .setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
+    .setHeader("Pragma", "no-cache")
+    .setHeader("Expires", "0")
+    .status(200).json({
       success: true,
       message: "Text fetched successfully",
       data: link.originalText,

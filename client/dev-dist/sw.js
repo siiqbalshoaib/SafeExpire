@@ -1,53 +1,13 @@
-/* eslint-disable no-restricted-globals */
-import { clientsClaim } from 'workbox-core';
-import { precacheAndRoute } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
-import { StaleWhileRevalidate, NetworkFirst, NetworkOnly } from 'workbox-strategies';
-import { ExpirationPlugin } from 'workbox-expiration';
+// sw.js - No caching, everything online
+self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Activate immediately
+});
 
-self.skipWaiting();
-clientsClaim();
+self.addEventListener('activate', (event) => {
+  clients.claim(); // Take control without reload
+});
 
-// Precache build assets
-precacheAndRoute(self.__WB_MANIFEST || []);
-
-// ✅ 1. Cache static assets (CSS, JS, images)
-registerRoute(
-  ({ request }) => ['style', 'script', 'image'].includes(request.destination),
-  new StaleWhileRevalidate({
-    cacheName: 'static-assets',
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 100, maxAgeSeconds: 7 * 24 * 60 * 60 }),
-    ],
-  })
-);
-
-// ✅ 2. Network only for SafeExpire protected content
-registerRoute(
-  ({ url }) => url.pathname.startsWith("https://safeexpire.onrender.com/api/v1/link/viewLink"), // Adjust to your protected route pattern
-  new NetworkOnly()
-);
-registerRoute(
-  ({ url }) => url.pathname.startsWith("https://www.safeexpire.com/view"), // Adjust to your protected route pattern
-  new NetworkOnly()
-);
-
-// ✅ 3. API calls (cache optional)
-registerRoute(
-  ({ url }) => url.pathname.startsWith('https://safeexpire.onrender.com/api/v1/link/viewLink'),
-  new NetworkFirst({
-    cacheName: 'api-cache',
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
-    ],
-  })
-);
-registerRoute(
-  ({ url }) => url.pathname.startsWith('https://www.safeexpire.com/view'),
-  new NetworkFirst({
-    cacheName: 'api-cache',
-    plugins: [
-      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 24 * 60 * 60 }),
-    ],
-  })
-);
+// Intercept fetch requests and always go to network
+self.addEventListener('fetch', (event) => {
+  event.respondWith(fetch(event.request));
+});

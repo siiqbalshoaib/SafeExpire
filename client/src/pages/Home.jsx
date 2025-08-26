@@ -10,7 +10,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>Home</title>
+        
         <meta
           name="title"
           content="Exclusive Self Destructing File Sharing You'll Love"

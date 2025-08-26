@@ -2,6 +2,8 @@ import React,{useState} from 'react'
 import Navbar from '../components/NavBar'
 import Footer from '../components/Footer'
 import { Helmet } from "react-helmet";
+import axios from 'axios';
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -24,31 +26,23 @@ const Contact = () => {
     setLoading(true);
     setStatus(null);
 
+    try {
+      const response = await axios.post(`${VITE_API_URL}/api/v1/contact/send`,formData,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
-    console.log(formData)
-     return res.status(200).json({ message: "Form submitted successfully!" });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
-    // try {
-    //   const response = await fetch('/api/contact', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(formData)
-    //   });
-
-    //   if (!response.ok) {
-    //     throw new Error('Network response was not ok');
-    //   }
-
-    //   const result = await response.json();
-    //   setStatus({ type: 'success', message: result.message });
-    //   setFormData({ name: "", email: "", text: "", message: "" });
-    // } catch (error) {
-    //   setStatus({ type: 'error', message: error.message });
-    // } finally {
-    //   setLoading(false);
-    // }
+      const result = await response.json();
+      setStatus({ type: 'success', message: result.message });
+      setFormData({ name: "", email: "", text: "", message: "" });
+    } catch (error) {
+      setStatus({ type: 'error', message: error.message });
+    } finally {
+      setLoading(false);
+    }
   }
      
   return (

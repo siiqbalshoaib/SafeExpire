@@ -20,6 +20,7 @@ export default function Navbar() {
             <Link href="/about" className="text-[#EFE4D2] hover:text-blue-600 hover:text-2xl font-sans font-medium" to="/about">About</Link>
             <Link href="/contact" className="text-[#EFE4D2] hover:text-blue-600 hover:text-2xl font-sans font-medium" to="/contact">Contact</Link>
             <Link href="/faq" className="text-[#EFE4D2] hover:text-blue-600 hover:text-2xl font-sans font-medium" to="/faq">FAQ</Link>
+            <Link href="/how-to-use" className="text-[#EFE4D2] hover:text-blue-600 hover:text-2xl font-sans font-medium" to="/how-to-use">How to use</Link>
             
             {/* <Link
               href="/login"

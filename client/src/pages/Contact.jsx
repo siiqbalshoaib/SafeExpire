@@ -27,18 +27,20 @@ const Contact = () => {
     setStatus(null);
 
     try {
-      const response = await axios.post(`${VITE_API_URL}/api/v1/contact/send`,formData,
-        { headers: { 'Content-Type': 'application/json' } }
+      const response = await axios.post(
+        `${VITE_API_URL}/api/v1/contact/send`,
+        formData,
+        { headers: { "Content-Type": "application/json" } }
       );
-
-      
-
-      const result = await response.json();
-      setStatus({ type: 'success', message: result.message });
+    
+      setStatus({ type: "success", message: response.data.message });
       alert("Message sent successfully");
       setFormData({ name: "", email: "", text: "", message: "" });
     } catch (error) {
-      setStatus({ type: 'error', message: error.message });
+      setStatus({
+        type: "error",
+        message: error.response?.data?.message || error.message,
+      });
       alert("Failed to send message. Please try again later.");
     } finally {
       setLoading(false);

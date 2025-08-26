@@ -31,15 +31,15 @@ const Contact = () => {
         { headers: { 'Content-Type': 'application/json' } }
       );
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      
 
       const result = await response.json();
       setStatus({ type: 'success', message: result.message });
+      alert("Message sent successfully");
       setFormData({ name: "", email: "", text: "", message: "" });
     } catch (error) {
       setStatus({ type: 'error', message: error.message });
+      alert("Failed to send message. Please try again later.");
     } finally {
       setLoading(false);
     }

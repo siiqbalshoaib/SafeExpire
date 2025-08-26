@@ -21,7 +21,7 @@ const Home = () => {
         />
         <meta
           name="keywords"
-          content="temp file, Share file with expiry date, self destructing file sharing, secure file sharing link, temporary file link generator, self destructing photo sharing, share link file with expiration date, temp file upload, pdf share link expiry, share file with expiry date"
+          content="expiry link generator ,temp file, Share file with expiry date, self destructing file sharing, secure file sharing link, temporary file link generator, self destructing photo sharing, share link file with expiration date, temp file upload, pdf share link expiry, share file with expiry date"
         />
         <meta name="robots" content="index, follow" />
       </Helmet>

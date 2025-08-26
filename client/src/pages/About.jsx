@@ -14,6 +14,7 @@ const About = () => {
           content="We’re not just another tool — we’re your digital vault for trust."
         />
         <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="/about" />
       </Helmet>
       <Navbar />
       <section className="bg-[#EFE4D2] py-16 " id="about">

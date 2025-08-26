@@ -1,6 +1,7 @@
 import React from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/NavBar";
+import { Helmet } from "react-helmet";
 
 const FAQ = () => {
   const faqs = [
@@ -38,6 +39,13 @@ const FAQ = () => {
 
   return (
     <>
+    <Helmet>
+      <title>faq</title>
+      <meta name="title" content="faq" />
+      <meta name="description" content="faq page" />
+      <meta name="robots" content="index, follow" />
+      <link rel="canonical" href="/faq" />
+    </Helmet>
     <Navbar/>
     <section className="bg-[#EFE4D2]  py-16" id="faq">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

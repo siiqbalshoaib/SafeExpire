@@ -24,6 +24,7 @@ const Home = () => {
           content="expiry link generator ,temp file, Share file with expiry date, self destructing file sharing, secure file sharing link, temporary file link generator, self destructing photo sharing, share link file with expiration date, temp file upload, pdf share link expiry, share file with expiry date, safe expire, secure file sharing, temporary file sharing, file link expiration, private file sharing, confidential file transfer, one-time download link, encrypted file sharing, limited-time access link , link expiration service, secure document sharing, file sharing with auto-delete, temporary access link, self-destructing message, secure file exchange, time-limited file sharing, disposable file link, ephemeral file sharing"
         />
         <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="/"   />
       </Helmet>
       <Navbar />
       <Linkform />

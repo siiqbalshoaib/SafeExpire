@@ -57,6 +57,7 @@ const Contact = () => {
         <title>Contact Us</title>
         <meta name="title" content="Contact Us" />
         <meta name="description" content="Have questions, suggestions, or feedback? We’d love to hear from you. Just fill out the form below." />
+        <link rel="canonical" href="/contact" />
         <meta name="robots" content="index, follow" />
       </Helmet>
     <Navbar/>

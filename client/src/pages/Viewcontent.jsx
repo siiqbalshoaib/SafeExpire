@@ -59,7 +59,7 @@ const ViewContent = () => {
       setTimeout(() => setShowWarning(false), 2000);
       
       // Auto-redirect after too many attempts
-      if (screenshotAttempts > 3) {
+      if (screenshotAttempts > 1) {
         
         window.location.href = '/';
       }

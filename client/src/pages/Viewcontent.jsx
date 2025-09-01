@@ -20,7 +20,7 @@ const ViewContent = () => {
   const fetchData = async (passwordInput = "") => {
     try {
       const query = passwordInput ? `?password=${encodeURIComponent(passwordInput)}` : "";
-      const response = await fetch(`${VITE_API_URL}/api/v1/link/viewLink/${id}${query}`, { cache: 'no-store' });
+      const response = await fetch(`${VITE_API_URL}/api/v1/link/viewLink/${id}${query}`);
       const result = await response.json();
       if (result.success) {
         if (result.data === "password_required") {

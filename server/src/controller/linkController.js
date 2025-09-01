@@ -127,31 +127,38 @@ const viewLink = asyncHandler(async (req, res) => {
   const cloudinaryUrl = link.originalText;
 
   if (link.isFile) {
-    // Stream Cloudinary file through backend
     const cloudinaryUrl = link.originalText;
     const fileName = cloudinaryUrl.split("/").pop().split("?")[0];
-    const fileType = mime.lookup(fileName) || "application/octet-stream";
-
+  
+    // Force PDF type if extension is .pdf
+    let fileType = mime.lookup(fileName) || "application/octet-stream";
+    if (fileName.toLowerCase().endsWith(".pdf")) {
+      fileType = "application/pdf";
+    }
+  
     const fileResponse = await axios.get(cloudinaryUrl, {
-      responseType: "stream",
+      responseType: "arraybuffer", // safer than stream for PDFs
     });
-
-    res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+  
     res.setHeader("Content-Type", fileType);
-
-    return fileResponse.data.pipe(res);
+    res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  
+    return res.send(Buffer.from(fileResponse.data));
   } else {
-    // Return plain text
     return res
-    .setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
-    .setHeader("Pragma", "no-cache")
-    .setHeader("Expires", "0")
-    .status(200).json({
-      success: true,
-      message: "Text fetched successfully",
-      data: link.originalText,
-    });
+      .setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
+      .setHeader("Pragma", "no-cache")
+      .setHeader("Expires", "0")
+      .status(200).json({
+        success: true,
+        message: "Text fetched successfully",
+        data: link.originalText,
+      });
   }
+  
 });
 
 export { generateLinkText, viewLink };

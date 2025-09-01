@@ -17,8 +17,8 @@ const Linkform = () => {
   const [result, setResult] = useState(null);
  
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(`${VITE_HOST}/view/${result.link}`);
+  const handleCopy = () => { 
+    navigator.clipboard.writeText(`${VITE_HOST}/view/${result.link}`); 
     alert("Copied to clipboard!");
   };
 
@@ -70,7 +70,7 @@ const Linkform = () => {
       } else if (activeTab === "text") {
         if (!text.trim()) {
           setLoading(false);
-          return alert("Please enter some text.");
+          return alert("Please enter some text."); 
         }
 
         const res = await axios.post(

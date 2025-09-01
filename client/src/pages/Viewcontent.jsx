@@ -243,7 +243,7 @@ const ViewContent = () => {
       
       document.removeEventListener('contextmenu', handleRightClick);
       document.removeEventListener('selectstart', handleSelection);
-      // document.removeEventListener('dragstart', handleDrag);
+      document.removeEventListener('dragstart', handleDrag);
       
       document.removeEventListener('copy', handleClipboard);
       document.removeEventListener('cut', handleClipboard);

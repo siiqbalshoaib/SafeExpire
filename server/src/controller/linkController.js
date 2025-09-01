@@ -131,6 +131,10 @@ const viewLink = asyncHandler(async (req, res) => {
     const cloudinaryUrl = link.originalText;
     const fileName = cloudinaryUrl.split("/").pop().split("?")[0];
     const fileType = mime.lookup(fileName) || "application/octet-stream";
+    
+    if (fileName.toLowerCase().endsWith(".pdf")) {
+      fileType = "application/pdf";
+    }
 
     const fileResponse = await axios.get(cloudinaryUrl, {
       responseType: "stream",

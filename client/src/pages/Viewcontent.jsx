@@ -383,7 +383,7 @@ const ViewContent = () => {
                 <p className="mb-4 font-semibold">Secure File:</p>
                 {content.endsWith(".pdf") ? (
                    
-                  <object 
+                  <iframe 
                     src={content} 
                     title="PDF" 
                     className="w-full h-[500px] border-2 border-gray-300" 

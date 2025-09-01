@@ -377,7 +377,7 @@ const ViewContent = () => {
           </form>
         ) : content ? (
           <div className="relative">
-            {/* Content Display */}
+            {/* display content*/}
             {typeof content === "string" && content.startsWith("http") ? (
               <div>
                 <p className="mb-4 font-semibold">Secure File:</p>

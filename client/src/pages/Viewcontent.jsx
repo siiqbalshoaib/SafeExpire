@@ -384,7 +384,7 @@ const ViewContent = () => {
                 {content.endsWith(".pdf") ? (
                    
                   <iframe 
-                    src={content.replace("/upload/", "/upload/fl_inline/")} 
+                    src={content} 
                     title="PDF" 
                     className="w-full h-[500px] border-2 border-gray-300" 
                     style={{ pointerEvents: 'auto' }}

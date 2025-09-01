@@ -382,11 +382,12 @@ const ViewContent = () => {
               <div>
                 <p className="mb-4 font-semibold">Secure File:</p>
                 {content.endsWith(".pdf") ? (
+                   
                   <iframe 
-                    src={content} 
+                    src={content.replace("/upload/", "/upload/fl_inline/")} 
                     title="PDF" 
                     className="w-full h-[500px] border-2 border-gray-300" 
-                    style={{ pointerEvents: 'none' }}
+                    style={{ pointerEvents: 'auto' }}
                   />
                 ) : content.endsWith(".jpg") || content.endsWith(".png") ? (
                   <img 

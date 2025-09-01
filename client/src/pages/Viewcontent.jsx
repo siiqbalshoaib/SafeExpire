@@ -253,7 +253,7 @@ const ViewContent = () => {
       
       // Clear intervals
       clearInterval(zoomInterval);
-      clearInterval(devToolsInterval);
+      clearInterval(devToolsInterval); 
       
       // Remove styles
       const injectedStyle = document.querySelector('style[data-safeexpire]');

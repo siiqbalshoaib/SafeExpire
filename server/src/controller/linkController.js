@@ -77,7 +77,7 @@ const generateLinkText = asyncHandler(async (req, res) => {
     data: {
       // link: `${process.env.BASE_URL}/s/${createdUrl}`,
       link: createdUrl,
-      id: createdUrl,
+      id: createdUrl, // for backward compatibility
     },
   });
 });

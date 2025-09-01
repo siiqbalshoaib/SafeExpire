@@ -386,7 +386,7 @@ const ViewContent = () => {
                     src={content} 
                     title="PDF" 
                     className="w-full h-[500px] border-2 border-gray-300" 
-                    style={{ pointerEvents: 'none' }}
+                    style={{ pointerEvents: 'auto' }}
                   />
                 ) : content.endsWith(".jpg") || content.endsWith(".png") ? (
                   <img 
